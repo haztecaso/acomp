@@ -6,6 +6,7 @@ from typing import List, Tuple
 from actividad3 import es_suma_de_k_potencias_n
 from timeit import timeit
 
+
 def test_args_list(l1: str, args_list: List[Tuple[int, int, int]], test_number: int):
     assert len(l1) == len(args_list), f"test-{test_number} inválido"
     E = 0
@@ -88,6 +89,7 @@ def test_time():
     t6 = timeit("test6()", globals=globals(), number=1)
     print(f"{t6 = }")
 
+
 def test_all():
     E = 0
     E += test1()
@@ -97,6 +99,7 @@ def test_all():
     E += timeit("test5()", globals=globals(), number=1)
     E += timeit("test6()", globals=globals(), number=1)
     return E
+
 
 def main():
     E = test_all()
