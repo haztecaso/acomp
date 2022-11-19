@@ -5,7 +5,7 @@
 from enum import Enum
 from math import gcd, isqrt
 from random import randint
-from typing import Dict, List, Set, Tuple, Union
+from typing import Dict, Iterable, List, Set, Union
 
 
 class MaybePrime(Enum):
@@ -17,6 +17,7 @@ class MaybePrime(Enum):
     UNSURE = -1
     COMPOSITE = 0
     PRIME = 1
+
 
 # ------------------------------------------------------------------------------
 # Empiezo definiendo funciones que funcionan en el caso general, para cualquier
@@ -134,7 +135,7 @@ def lucas_test(
 
 def is_prime(
     n: int,
-    num_intentos: Tuple[int, int] = (10, 10),
+    num_intentos: int = 10,
 ) -> bool:
     """
     Función que combina los tests probabilísticos para obtener un resultado
@@ -144,10 +145,10 @@ def is_prime(
     as_rabin_miller: List[int] = []
     as_lucas: List[int] = []
     while result == MaybePrime.UNSURE:
-        result = rabin_miller_test(n, num_intentos[0], as_rabin_miller)
+        result = rabin_miller_test(n, num_intentos, as_rabin_miller)
         if result != MaybePrime.UNSURE:
             break
-        result = lucas_test(n, num_intentos[1], as_lucas)
+        result = lucas_test(n, num_intentos, as_lucas)
     return result == MaybePrime.PRIME
 
 
@@ -168,7 +169,7 @@ def prime_factors_p_m(m: int):
     pm = p(m)
     if pm in factor_cache:
         return factor_cache[pm]
-    result = prime_factors_p_m(m-1) if m > 1 else set()
+    result = prime_factors_p_m(m - 1) if m > 1 else set()
     for i in range(m):
         n = 3 * i + 1
         for q in prime_factors(n, False):
@@ -208,7 +209,7 @@ def lucas_test_p_m_plus_1(
 
 def is_prime_pm_plus_1(
     m: int,
-    num_intentos: Tuple[int, int] = (10, 10),
+    num_intentos: int = 10,
 ) -> bool:
     global p
     result = MaybePrime.UNSURE
@@ -216,10 +217,10 @@ def is_prime_pm_plus_1(
     as_lucas: List[int] = []
     n = p(m) + 1
     while result == MaybePrime.UNSURE:
-        result = rabin_miller_test(n, num_intentos[0], as_rabin_miller)
+        result = rabin_miller_test(n, num_intentos, as_rabin_miller)
         if result != MaybePrime.UNSURE:
             break
-        result = lucas_test_p_m_plus_1(m, num_intentos[1], as_lucas)
+        result = lucas_test_p_m_plus_1(m, num_intentos, as_lucas)
     return result == MaybePrime.PRIME
 
 
@@ -227,15 +228,22 @@ def test_pm_plus_1(m: int) -> bool:
     return is_prime_pm_plus_1(m)
 
 
-if __name__ == "__main__":
+def check_m_values(ms: Iterable[int]):
     from time import time
-    t = time()
+
+    t0 = time()
     msg = ""
-    clear = lambda msg: print(""*len(msg), end="\r")
-    for m in range(1, 2000):
+    clear = lambda msg: print("" * len(msg), end="\r")
+    for m in ms:
+        msg = f"{m}\t{time()-t0:.4f}s".expandtabs()
+        clear(msg)
+        print(msg, end="\r")
+        t = time()
         if test_pm_plus_1(m):
             clear(msg)
             print(f"{m}\t{time()-t:.4f}s")
-        msg = f"{m}\t{time()-t:.4f}s".expandtabs()
-        clear(msg)
-        print(msg, end="\r")
+
+
+if __name__ == "__main__":
+    # check_m_values([1,2,3,4,14,20,31,59,443,1600,1659])
+    check_m_values(range(1, 2000))
