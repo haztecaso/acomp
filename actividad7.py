@@ -9,8 +9,9 @@ from typing import Dict, Iterable, Set, Union
 
 from functools import lru_cache
 
+
 @lru_cache(maxsize=2**40)
-def pow(b:int, e:int, m:int):
+def pow(b: int, e: int, m: int):
     """
     Implementación de la exponenciación modular rápida usando una cache para
     almacenar resultados.
@@ -21,8 +22,10 @@ def pow(b:int, e:int, m:int):
     while e:
         e >>= 1
         b = (b * b) % m
-        if e & 1: r = (r * b) % m
+        if e & 1:
+            r = (r * b) % m
     return r
+
 
 class MaybePrime(Enum):
     """
@@ -105,7 +108,7 @@ def rabin_miller_test(n: int, num_intentos: int = 10) -> MaybePrime:
     return MaybePrime.UNSURE
 
 
-def lucas_test( n: int, num_intentos: int = 10) -> MaybePrime:
+def lucas_test(n: int, num_intentos: int = 10) -> MaybePrime:
     """Test probabilístico de primalidad."""
     if n in {2, 3, 5, 7}:
         return MaybePrime.PRIME
@@ -125,10 +128,7 @@ def lucas_test( n: int, num_intentos: int = 10) -> MaybePrime:
     return MaybePrime.UNSURE
 
 
-def is_prime(
-    n: int,
-    num_intentos: int = 10,
-) -> bool:
+def is_prime(n: int, num_intentos: int = 10) -> bool:
     """
     Función que combina los tests probabilísticos para obtener un resultado
     certero
@@ -168,10 +168,7 @@ def prime_factors_p_m(m: int):
     return result
 
 
-def lucas_test_p_m_plus_1(
-    m: int,
-    num_intentos: int = 10,
-) -> MaybePrime:
+def lucas_test_p_m_plus_1(m: int, num_intentos: int = 10) -> MaybePrime:
     global p
     n = p(m) + 1
     if n in {2, 3, 5, 7}:
@@ -192,10 +189,7 @@ def lucas_test_p_m_plus_1(
     return MaybePrime.UNSURE
 
 
-def is_prime_pm_plus_1(
-    m: int,
-    num_intentos: int = 10,
-) -> bool:
+def is_prime_pm_plus_1(m: int, num_intentos: int = 10) -> bool:
     global p
     result = MaybePrime.UNSURE
     n = p(m) + 1
