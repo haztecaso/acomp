@@ -7,6 +7,22 @@ from math import gcd, isqrt
 from random import randint
 from typing import Dict, Iterable, Set, Union
 
+from functools import lru_cache
+
+@lru_cache(maxsize=2**40)
+def pow(b:int, e:int, m:int):
+    """
+    Implementación de la exponenciación modular rápida usando una cache para
+    almacenar resultados.
+    """
+    r = 1
+    if 1 & e:
+        r = b
+    while e:
+        e >>= 1
+        b = (b * b) % m
+        if e & 1: r = (r * b) % m
+    return r
 
 class MaybePrime(Enum):
     """
@@ -202,13 +218,13 @@ def check_m_values(ms: Iterable[int]):
     msg = ""
     clear = lambda msg: print(" " * len(msg), end="\r")
     for m in ms:
-        msg = f"{m}\t{time()-t0:.4f}s".expandtabs()
+        msg = f"{m}\t{time()-t0:.2f}s".expandtabs()
         clear(msg)
         print(msg, end="\r")
         t = time()
         if test_pm_plus_1(m):
             clear(msg)
-            print(f"{m}\t{time()-t:.4f}s")
+            print(f"{m}\t{time()-t:.2f}s\t{time()-t0:.2f}s")
 
 
 if __name__ == "__main__":
