@@ -5,7 +5,7 @@
 from enum import Enum
 from math import gcd, isqrt
 from random import randint
-from typing import Dict, Iterable, List, Set, Union
+from typing import Dict, Iterable, Set, Union
 
 
 class MaybePrime(Enum):
@@ -62,15 +62,8 @@ def prime_factors(
     yield from prime_factors(n, cache_enabled, n_original)
 
 
-def rabin_miller_test(
-    n: int, num_intentos: int = 10, as_comprobadas: Union[List[int], None] = None
-) -> MaybePrime:
-    """
-    Test probabilístico de no primalidad.
-
-    El parámetro as_comprobadas es una lista de valores de a que ya han sido
-    comprobados anteriormente y por tanto no tiene sentido volver a comprobar.
-    """
+def rabin_miller_test(n: int, num_intentos: int = 10) -> MaybePrime:
+    """Test probabilístico de no primalidad."""
     if n in {2, 3, 5, 7}:
         return MaybePrime.PRIME
     if n < 11 or n % 2 == 0:
@@ -82,10 +75,6 @@ def rabin_miller_test(
         r += 1
     for _ in range(num_intentos):
         a = randint(1, n - 1)
-        if as_comprobadas is not None:
-            while a in as_comprobadas:
-                a = randint(2, n - 1)
-            as_comprobadas.append(a)
         if gcd(a, n) != 1:
             return MaybePrime.COMPOSITE
         x = pow(a, m, n)
@@ -100,27 +89,14 @@ def rabin_miller_test(
     return MaybePrime.UNSURE
 
 
-def lucas_test(
-    n: int,
-    num_intentos: int = 10,
-    as_comprobadas: Union[List[int], None] = None,
-) -> MaybePrime:
-    """
-    Test probabilístico de primalidad.
-
-    El parámetro as_comprobadas es una lista de valores de a que ya han sido
-    comprobados anteriormente y por tanto no tiene sentido volver a comprobar.
-    """
+def lucas_test( n: int, num_intentos: int = 10) -> MaybePrime:
+    """Test probabilístico de primalidad."""
     if n in {2, 3, 5, 7}:
         return MaybePrime.PRIME
     if n < 11 or n % 2 == 0:
         return MaybePrime.COMPOSITE
     for _ in range(num_intentos):
         a = randint(2, n - 1)
-        if as_comprobadas is not None:
-            while a in as_comprobadas:
-                a = randint(2, n - 1)
-            as_comprobadas.append(a)
         if pow(a, n - 1, n) != 1:
             return MaybePrime.COMPOSITE
         check = True
@@ -142,13 +118,11 @@ def is_prime(
     certero
     """
     result = MaybePrime.UNSURE
-    as_rabin_miller: List[int] = []
-    as_lucas: List[int] = []
     while result == MaybePrime.UNSURE:
-        result = rabin_miller_test(n, num_intentos, as_rabin_miller)
+        result = rabin_miller_test(n, num_intentos)
         if result != MaybePrime.UNSURE:
             break
-        result = lucas_test(n, num_intentos, as_lucas)
+        result = lucas_test(n, num_intentos)
     return result == MaybePrime.PRIME
 
 
@@ -181,7 +155,6 @@ def prime_factors_p_m(m: int):
 def lucas_test_p_m_plus_1(
     m: int,
     num_intentos: int = 10,
-    as_comprobadas: Union[List[int], None] = None,
 ) -> MaybePrime:
     global p
     n = p(m) + 1
@@ -191,10 +164,6 @@ def lucas_test_p_m_plus_1(
         return MaybePrime.COMPOSITE
     for _ in range(num_intentos):
         a = randint(2, n - 1)
-        if as_comprobadas is not None:
-            while a in as_comprobadas:
-                a = randint(2, n - 1)
-            as_comprobadas.append(a)
         if pow(a, n - 1, n) != 1:
             return MaybePrime.COMPOSITE
         check = True
@@ -213,19 +182,17 @@ def is_prime_pm_plus_1(
 ) -> bool:
     global p
     result = MaybePrime.UNSURE
-    as_rabin_miller: List[int] = []
-    as_lucas: List[int] = []
     n = p(m) + 1
     while result == MaybePrime.UNSURE:
-        result = rabin_miller_test(n, num_intentos, as_rabin_miller)
+        result = rabin_miller_test(n, num_intentos)
         if result != MaybePrime.UNSURE:
             break
-        result = lucas_test_p_m_plus_1(m, num_intentos, as_lucas)
+        result = lucas_test_p_m_plus_1(m, num_intentos)
     return result == MaybePrime.PRIME
 
 
 def test_pm_plus_1(m: int) -> bool:
-    return is_prime_pm_plus_1(m)
+    return is_prime_pm_plus_1(m, 1)
 
 
 def check_m_values(ms: Iterable[int]):
@@ -233,7 +200,7 @@ def check_m_values(ms: Iterable[int]):
 
     t0 = time()
     msg = ""
-    clear = lambda msg: print("" * len(msg), end="\r")
+    clear = lambda msg: print(" " * len(msg), end="\r")
     for m in ms:
         msg = f"{m}\t{time()-t0:.4f}s".expandtabs()
         clear(msg)
