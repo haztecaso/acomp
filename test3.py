@@ -2,9 +2,10 @@
 # Ejecutar "python3 test3.py" en la terminal en la carpeta donde se
 # encuentra el fichero actividad3.py.
 
-from typing import List, Tuple
-from actividad3 import es_suma_de_k_potencias_n
 from timeit import timeit
+from typing import List, Tuple
+
+from actividad3 import es_suma_de_k_potencias_n
 
 
 def test_args_list(l1: str, args_list: List[Tuple[int, int, int]], test_number: int):

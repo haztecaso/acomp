@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-from actividad6 import f
 from timeit import timeit
+
+from actividad6 import f
 
 cases = [
     (1, 3, 187),
@@ -13,10 +14,9 @@ cases = [
     ),
 ]
 
-def test(n,b,expected):
-    assert (
-        f(n, b) == expected
-    ), f"f({n}, {b}) = {f(n,b)} pero debería valer {expected}"
+
+def test(n, b, expected):
+    assert f(n, b) == expected, f"f({n}, {b}) = {f(n,b)} pero debería valer {expected}"
 
 
 if __name__ == "__main__":

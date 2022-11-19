@@ -2,7 +2,7 @@
 
 from typing import List
 
-from natural import sumar, multiplicar_karatsuba
+from natural import multiplicar_karatsuba, sumar
 
 
 def base2_a_decimal(n: List[int]) -> List[int]:

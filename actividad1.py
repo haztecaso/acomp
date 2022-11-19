@@ -3,9 +3,8 @@
 # Adrián Lattes Grassi
 # 09/09/2022
 
-from typing import Tuple
 from functools import reduce
-
+from typing import Tuple
 
 # función para obtener el signo de un número entero
 signo = lambda n: -1 if n < 0 else 1

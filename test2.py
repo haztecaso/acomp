@@ -3,7 +3,7 @@
 # Ejecutar "python3 test2.py" en la terminal en la carpeta donde se
 # encuentra el fichero actividad2.py.
 
-from actividad2 import conway, BoardState
+from actividad2 import BoardState, conway
 
 e = 0
 

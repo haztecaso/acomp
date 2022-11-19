@@ -3,9 +3,9 @@
 # Adrián Lattes Grassi
 # 18/09/2022
 
-from typing import Callable, List, Literal, Tuple, TypeAlias, Union
-from itertools import product
 from copy import deepcopy
+from itertools import product
+from typing import Callable, List, Literal, Tuple, TypeAlias, Union
 
 # Tipo para las celdas: 0 o 1
 CellState: TypeAlias = Union[Literal[0], Literal[1]]

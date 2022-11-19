@@ -4,8 +4,9 @@
 
 
 from random import randint as rand
-from actividad4 import base2_a_decimal
 from timeit import timeit
+
+from actividad4 import base2_a_decimal
 
 
 def remover_ceros(a):
@@ -38,7 +39,7 @@ def test():
     for i in range(len(args)):
         n, expected = args[i]
         t = timeit("test_assert(n,expected)", globals=globals(), number=1)
-        T +=t
+        T += t
         print(f"Test {i:03d}:\t{t:.6f}s\t{T:.6f}s")
         i += 1
 
