@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 # Adrián Lattes Grassi
+# 20/11/22
 
 from enum import Enum
+from functools import lru_cache
 from math import gcd, isqrt
 from random import randint
 from typing import Dict, Iterable, Set, Union
-
-from functools import lru_cache
 
 
 @lru_cache(maxsize=2**40)
@@ -159,11 +159,15 @@ def prime_factors_p_m(m: int):
     pm = p(m)
     if pm in factor_cache:
         return factor_cache[pm]
-    result = prime_factors_p_m(m - 1) if m > 1 else set()
+    result = set()
     for i in range(m):
         n = 3 * i + 1
-        for q in prime_factors(n, False):
-            result.add(q)
+        if n in factor_cache:
+            result_n = factor_cache[n]
+        else:
+            result_n = set(prime_factors(n,False))
+            factor_cache[n] = result_n
+        result = result.union(result_n)
     factor_cache[pm] = result
     return result
 
@@ -222,5 +226,4 @@ def check_m_values(ms: Iterable[int]):
 
 
 if __name__ == "__main__":
-    # check_m_values([1,2,3,4,14,20,31,59,443,1600,1659])
-    check_m_values(range(1, 2000))
+    check_m_values([1,2,3,4,14,20,31,59,443,1600,1659])
