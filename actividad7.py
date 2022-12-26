@@ -50,7 +50,7 @@ factor_cache: Dict[int, Set[int]] = dict()
 
 def prime_factors(
     n: int,
-    cache_enabled: bool = True,
+    cache_save: bool = True,
     n_original: Union[int, None] = None,
 ):
     """
@@ -63,22 +63,21 @@ def prime_factors(
     n_original = n if n_original is None else n_original
     if n <= 1:
         return
-    if cache_enabled:
-        global factor_cache
-        if n_original not in factor_cache:
-            factor_cache[n_original] = set()
-        elif n == n_original:
-            for p in factor_cache[n_original]:
-                yield p
-                while n % p == 0:
-                    n //= p
+    global factor_cache
+    if n_original not in factor_cache:
+        factor_cache[n_original] = set()
+    elif n == n_original:
+        for p in factor_cache[n_original]:
+            yield p
+            while n % p == 0:
+                n //= p
     p = next((x for x in range(2, isqrt(n) + 1) if n % x == 0), n)
-    if cache_enabled:
+    if cache_save:
         factor_cache[n_original].add(p)
     while n % p == 0:
         n //= p
     yield p
-    yield from prime_factors(n, cache_enabled, n_original)
+    yield from prime_factors(n, cache_save, n_original)
 
 
 def rabin_miller_test(n: int, num_intentos: int = 10) -> MaybePrime:
@@ -142,6 +141,22 @@ def is_prime(n: int, num_intentos: int = 10) -> bool:
     return result == MaybePrime.PRIME
 
 
+def check_n_values(ns: Iterable[int]):
+    from time import time
+
+    t0 = time()
+    msg = ""
+    clear = lambda msg: print(" " * len(msg), end="\r")
+    for n in ns:
+        msg = f"{n}\t{time()-t0:.2f}s".expandtabs()
+        clear(msg)
+        print(msg, end="\r")
+        t = time()
+        if is_prime(n):
+            clear(msg)
+            print(f"{n}\t{time()-t:.2f}s\t{time()-t0:.2f}s")
+
+
 # --------------------------------------------------
 # Funciones particularizadas para el caso n = p(m)+1
 # --------------------------------------------------
@@ -165,7 +180,7 @@ def prime_factors_p_m(m: int):
         if n in factor_cache:
             result_n = factor_cache[n]
         else:
-            result_n = set(prime_factors(n,False))
+            result_n = set(prime_factors(n, False))
             factor_cache[n] = result_n
         result = result.union(result_n)
     factor_cache[pm] = result
@@ -226,4 +241,5 @@ def check_m_values(ms: Iterable[int]):
 
 
 if __name__ == "__main__":
-    check_m_values([1,2,3,4,14,20,31,59,443,1600,1659])
+    check_m_values([1600])
+    # check_m_values([1,2,3,4,14,20,31,59,443,1600,1659])
